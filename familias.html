@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agua San Miguel - Gestión de Familias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💧</div>
+                <h2>San Miguel</h2>
+                <span>Módulo de Familias</span>
+            </div>
+            <nav>
+                <a href="index.html">🗂️ Dashboard</a>
+                <a href="familias.html" class="active">👥 Familias</a>
+                <a href="turnos.html">🗓️ Turnos Fijos</a>
+                <a href="operador.html">⚙️ Módulo Operador</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Administración de Usuarios</h1>
+                <div class="user-profile">Tesorero Central <span>👤</span></div>
+            </header>
+
+            <section class="data-section">
+                <div class="table-container fade-in">
+                    <div class="section-header">
+                        <h2>Listado Maestro de Censo Familiar</h2>
+                        <button class="btn btn-primary" onclick="abrirModalNuevaFamilia()">+ Agregar Nueva Familia</button>
+                    </div>
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre Completo</th>
+                                <th>DPI</th>
+                                <th>Teléfono</th>
+                                <th>Sector</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaFamiliasCompleta">
+                            <tr>
+                                <td>Lorenzana, Daniel</td>
+                                <td>2345 67890 0101</td>
+                                <td>5544-3322</td>
+                                <td>Sector 1</td>
+                                <td>
+                                    <button class="btn btn-outline" onclick="abrirFicha('Lorenzana, Daniel')">Ver Ficha</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Ardón, Carlos</td>
+                                <td>1234 56789 0101</td>
+                                <td>4433-2211</td>
+                                <td>Sector 2</td>
+                                <td>
+                                    <button class="btn btn-outline" onclick="abrirFicha('Ardón, Carlos')">Ver Ficha</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Nueva Familia -->
+    <div class="modal-overlay" id="modalNuevaFamilia">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Censo de Nueva Familia</h2>
+            <div class="input-group">
+                <label>Nombre del Jefe de Hogar:</label>
+                <input type="text" id="nombreFamilia" placeholder="Nombre completo">
+            </div>
+            <div class="input-group">
+                <label>DPI:</label>
+                <input type="text" id="dpiFamilia" placeholder="1234 56789 0101">
+            </div>
+            <div class="input-group">
+                <label>Número de Teléfono:</label>
+                <input type="text" id="telFamilia" placeholder="0000-0000">
+            </div>
+            <div class="input-group">
+                <label>Sector / Válvula:</label>
+                <select id="sectorFamilia" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    <option value="Sector 1">Sector 1 - Centro</option>
+                    <option value="Sector 2">Sector 2 - Norte</option>
+                    <option value="Sector 3">Sector 3 - Sur</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="guardarNuevaFamilia()">Registrar en Censo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ficha Técnica -->
+    <div class="modal-overlay" id="modalFicha">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Ficha Técnica del Habitante</h2>
+            <div id="fichaContenido">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notificación Éxito -->
+    <div class="modal-overlay" id="modalNotificacion">
+        <div class="modal" style="text-align: center;">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <div style="font-size: 50px;">✅</div>
+            <h2 id="notiTitulo">Acción Completada</h2>
+            <p id="notiTexto"></p>
+            <br>
+            <button class="btn btn-primary" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

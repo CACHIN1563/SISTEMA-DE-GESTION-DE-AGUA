@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operador - Agua San Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="offline-banner" class="offline-banner">⚠️ Estás en modo Offline. Los datos se guardarán localmente.</div>
+    <div id="online-banner" class="online-banner">✅ Conexión recuperada. Sincronizando datos...</div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🔧</div>
+                <h2>San Miguel</h2>
+                <span>Módulo Operativo</span>
+            </div>
+            <nav>
+                <a href="index.html">🗂️ Dashboard</a>
+                <a href="familias.html">👥 Familias</a>
+                <a href="turnos.html">🗓️ Turnos Fijos</a>
+                <a href="operador.html" class="active">⚙️ Módulo Operador</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Control de Tanque Colector</h1>
+                <div class="user-profile">Don Calí (Operador) <span>👷</span></div>
+            </header>
+
+            <section class="fade-in">
+                <p>Ingresa el nivel actual del tanque. El sistema simulará guardado offline si pierdes la conexión Wi-Fi.</p>
+                
+                <div class="tank-wrapper">
+                    <!-- Representación Visual -->
+                    <div class="tank-visual">
+                        <div class="water-level" id="visual-water"></div>
+                    </div>
+                    
+                    <!-- Controles de Ingreso -->
+                    <div class="tank-controls">
+                        <h3>Registrar Nueva Lectura</h3>
+                        <br>
+                        <div class="input-group">
+                            <label>Nivel de Agua (%)</label>
+                            <input type="number" id="nivelTanque" min="0" max="100" placeholder="Ej. 65">
+                        </div>
+                        <div class="input-group">
+                            <label>Observaciones (Fugas, Ruido)</label>
+                            <input type="text" id="obsTanque" placeholder="Nada fuera de lo normal">
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%" onclick="guardarMedicion()">Guardar Medición</button>
+                        
+                        <div id="statusMsg" class="msg-box" style="margin-top: 20px;"></div>
+                        
+                        <div style="margin-top: 30px; padding: 15px; border: 1px dashed #ccc; border-radius: 8px;">
+                            <p style="font-size: 13px; color: #666;"><strong>Simulador:</strong> Desactiva tu Wi-Fi o apaga tu internet en la computadora para ver cómo el sistema intercepta la pérdida de señal y guarda localmente la lectura.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Notificación Éxito -->
+    <div class="modal-overlay" id="modalNotificacion">
+        <div class="modal" style="text-align: center;">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <div style="font-size: 50px;">✅</div>
+            <h2 id="notiTitulo">Acción Completada</h2>
+            <p id="notiTexto"></p>
+            <br>
+            <button class="btn btn-primary" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agua San Miguel - Planificación de Turnos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💧</div>
+                <h2>San Miguel</h2>
+                <span>Módulo de Turnos</span>
+            </div>
+            <nav>
+                <a href="index.html">🗂️ Dashboard</a>
+                <a href="familias.html">👥 Familias</a>
+                <a href="turnos.html" class="active">🗓️ Turnos Fijos</a>
+                <a href="operador.html">⚙️ Módulo Operador</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Calendario de Distribución de Agua</h1>
+                <div class="user-profile">Tesorero Central <span>👤</span></div>
+            </header>
+
+            <section class="data-section">
+                <div class="table-container fade-in">
+                    <div class="section-header">
+                        <h2>Programación Semanal por Sectores</h2>
+                        <button class="btn btn-primary" onclick="abrirModalNuevoTurno()">+ Nuevo Turno</button>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                            <div style="font-weight: bold;">Lunes</div>
+                            <div style="font-weight: bold;">Martes</div>
+                            <div style="font-weight: bold;">Miércoles</div>
+                            <div style="font-weight: bold;">Jueves</div>
+                            <div style="font-weight: bold;">Viernes</div>
+                            <div style="font-weight: bold;">Sábado</div>
+                            <div style="font-weight: bold;">Domingo</div>
+                            
+                            <!-- Ejemplo de Llenado Visual -->
+                            <div class="kpi-card info" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--primary);">
+                                <b>Sector 1</b><br>08:00 - 13:00
+                            </div>
+                            <div class="kpi-card success" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--success);">
+                                <b>Sector 2</b><br>08:00 - 13:00
+                            </div>
+                            <div class="kpi-card warning" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--warning);">
+                                <b>Sector 3</b><br>08:00 - 13:00
+                            </div>
+                            <div class="kpi-card info" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--primary);">
+                                <b>Sector 1</b><br>08:00 - 13:00
+                            </div>
+                            <div class="kpi-card success" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--success);">
+                                <b>Sector 2</b><br>08:00 - 13:00
+                            </div>
+                            <div class="kpi-card warning" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--warning);">
+                                <b>Sector 3</b><br>14:00 - 18:00
+                            </div>
+                            <div style="padding: 10px; border: 1px dashed #ccc; border-radius: 8px; font-size: 12px;">Limpieza Tanque</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 40px;">
+                        <h3>Sectores Disponibles</h3>
+                        <div class="kpi-grid" style="margin-top: 20px;">
+                            <div class="kpi-card info" style="padding: 20px;">
+                                <h4>Sector 1 - Centro</h4>
+                                <p>50 Familias conectadas</p>
+                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 1 - Centro')">Ver Horarios</button>
+                            </div>
+                            <div class="kpi-card success" style="padding: 20px;">
+                                <h4>Sector 2 - Norte</h4>
+                                <p>38 Familias conectadas</p>
+                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 2 - Norte')">Ver Horarios</button>
+                            </div>
+                            <div class="kpi-card warning" style="padding: 20px;">
+                                <h4>Sector 3 - Sur</h4>
+                                <p>22 Familias conectadas</p>
+                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 3 - Sur')">Ver Horarios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Nuevo Turno -->
+    <div class="modal-overlay" id="modalNuevoTurno">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Programar Nuevo Turno</h2>
+            <div class="input-group">
+                <label>Sector:</label>
+                <select id="sectorTurno" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    <option value="Sector 1">Sector 1 - Centro</option>
+                    <option value="Sector 2">Sector 2 - Norte</option>
+                    <option value="Sector 3">Sector 3 - Sur</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Hora Inicio:</label>
+                <input type="time" id="horaInicio">
+            </div>
+            <div class="input-group">
+                <label>Hora Fin:</label>
+                <input type="time" id="horaFin">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="guardarTurno()">Programar en Sistema</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Horarios Detallados -->
+    <div class="modal-overlay" id="modalHorariosDetalle">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2 id="horarioTitulo">Horarios de Distribución</h2>
+            <br>
+            <div id="horarioContenido" style="font-size: 14px; line-height: 2;">
+                <!-- Dinámico -->
+            </div>
+            <br>
+            <button class="btn btn-outline" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal Notificación Éxito -->
+    <div class="modal-overlay" id="modalNotificacion">
+        <div class="modal" style="text-align: center;">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <div style="font-size: 50px;">✅</div>
+            <h2 id="notiTitulo">Acción Completada</h2>
+            <p id="notiTexto"></p>
+            <br>
+            <button class="btn btn-primary" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
