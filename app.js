@@ -28,6 +28,40 @@ if(!navigator.onLine) {
     if(offlineBanner) offlineBanner.style.display = 'block';
 }
 
+// === INICIALIZACIÓN: Leer última medición del tanque desde localStorage ===
+document.addEventListener('DOMContentLoaded', () => {
+    const ultimaLectura = JSON.parse(localStorage.getItem('ultimoNivelTanque'));
+    if (ultimaLectura) {
+        const nivel = ultimaLectura.nivel;
+        // Actualizar barra del Dashboard
+        const fillMain = document.getElementById('tank-fill-main');
+        const percentMain = document.getElementById('tank-main-percent');
+        if (fillMain) fillMain.style.height = nivel + '%';
+        if (percentMain) percentMain.innerText = nivel + '%';
+        
+        // Cambiar color según nivel crítico
+        if (fillMain) {
+            if (nivel <= 15) {
+                fillMain.style.background = 'linear-gradient(to top, #d62828, #e63946)';
+            } else if (nivel <= 40) {
+                fillMain.style.background = 'linear-gradient(to top, #f77f00, #fcbf49)';
+            } else {
+                fillMain.style.background = 'linear-gradient(to top, #0077b6, #00b4d8)';
+            }
+        }
+
+        // Actualizar texto de estado si existe
+        const statusEl = document.getElementById('tank-sync-status');
+        if (statusEl) {
+            const fecha = new Date(ultimaLectura.fecha);
+            statusEl.innerText = ultimaLectura.sincronizado 
+                ? `✅ Sincronizado: ${fecha.toLocaleTimeString('es-GT')}` 
+                : `⏳ Pendiente de sync: ${fecha.toLocaleTimeString('es-GT')}`;
+        }
+    }
+});
+
+
 // === GESTIÓN GLOBAL DE MODALES ===
 function cerrarModales() {
     const overlays = document.querySelectorAll('.modal-overlay');
@@ -283,12 +317,14 @@ function guardarMedicion() {
 
     const payload = {
         fecha: new Date().toISOString(),
-        nivel: nivel,
-        observaciones: obs
+        nivel: parseInt(nivel),
+        observaciones: obs,
+        sincronizado: false
     };
 
     if (navigator.onLine) {
         console.log("Enviando a API Nube: ", payload);
+        payload.sincronizado = true;
         msgBox.innerText = "Guardado Correctamente en Servidor Central.";
         msgBox.style.color = "green";
     } else {
@@ -296,9 +332,12 @@ function guardarMedicion() {
         pendientes.push(payload);
         localStorage.setItem('lecturasPendientes', JSON.stringify(pendientes));
         
-        msgBox.innerText = "⚠️ GUARDADO LOCAL: Información pendiente de envío когда vuelva el Wi-Fi.";
+        msgBox.innerText = "⚠️ GUARDADO LOCAL: Información pendiente de envío cuando vuelva el Wi-Fi.";
         msgBox.style.color = "#ffb703";
     }
+    
+    // Guardar el último nivel siempre en localStorage (para que el Dashboard lo lea)
+    localStorage.setItem('ultimoNivelTanque', JSON.stringify(payload));
 }
 
 function sincronizarDatosPendientes() {
