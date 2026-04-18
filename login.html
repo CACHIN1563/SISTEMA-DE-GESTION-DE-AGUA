@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema Agua San Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="auth.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 50%, #03045e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Burbujas decorativas */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+            bottom: -80px;
+            left: -80px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo .water-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(0,119,182,0.4);
+        }
+        .login-logo h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .login-logo p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Tabs de tipo de usuario */
+        .user-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+        }
+        .tab-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: transparent;
+            color: #64748b;
+        }
+        .tab-btn.active {
+            background: white;
+            color: #0077b6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #1e293b;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #0077b6;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,119,182,0.4);
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,119,182,0.5);
+        }
+        .btn-login:active { transform: translateY(0); }
+
+        .error-msg {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .credentials-hint {
+            margin-top: 20px;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #0077b6;
+        }
+        .credentials-hint p {
+            font-size: 12px;
+            color: #0369a1;
+            line-height: 1.8;
+        }
+        .credentials-hint strong { color: #023e8a; }
+
+        .panel-section { display: none; }
+        .panel-section.active { display: block; }
+
+        .footer-login {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo -->
+        <div class="login-logo">
+            <div class="water-icon">💧</div>
+            <h1>Agua San Miguel</h1>
+            <p>Sistema de Gestión y Control del Agua</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="user-tabs">
+            <button class="tab-btn active" id="tabAdmin" onclick="cambiarTab('admin')">🏛️ Comité / Operario</button>
+            <button class="tab-btn" id="tabHabitante" onclick="cambiarTab('habitante')">👤 Habitante</button>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-msg" id="errorMsg">
+            ❌ Usuario o contraseña incorrectos. Intenta nuevamente.
+        </div>
+
+        <!-- Panel Admin/Operario -->
+        <div class="panel-section active" id="panelAdmin">
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" id="inputUsuario" placeholder="Ej: admin" />
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="inputPassword" placeholder="••••••" 
+                    onkeydown="if(event.key==='Enter') iniciarSesion()" />
+            </div>
+            <button class="btn-login" onclick="iniciarSesion()">Ingresar al Sistema →</button>
+
+            <div class="credentials-hint">
+                <p>
+                    <strong>Comité:</strong> admin / admin123<br>
+                    <strong>Operario:</strong> operario / op123<br>
+                    <strong>Tesorero:</strong> tesorero / tes123
+                </p>
+            </div>
+        </div>
+
+        <!-- Panel Habitante -->
+        <div class="panel-section" id="panelHabitante">
+            <div class="form-group">
+                <label>Número de Teléfono o DPI</label>
+                <input type="text" id="inputTelefono" placeholder="Ej: 5544-3322"
+                    onkeydown="if(event.key==='Enter') loginHabitante()" />
+            </div>
+            <button class="btn-login" onclick="loginHabitante()">Consultar mi Estado →</button>
+        </div>
+
+        <div class="footer-login">Sistema de Gestión de Agua • Comunidad San Miguel</div>
+    </div>
+
+    <script>
+        // auth.js se encarga de la verificación inicial de sesión
+
+
+        function cambiarTab(tipo) {
+            document.getElementById('tabAdmin').classList.toggle('active', tipo === 'admin');
+            document.getElementById('tabHabitante').classList.toggle('active', tipo === 'habitante');
+            document.getElementById('panelAdmin').classList.toggle('active', tipo === 'admin');
+            document.getElementById('panelHabitante').classList.toggle('active', tipo === 'habitante');
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function iniciarSesion() {
+            const usuario = document.getElementById('inputUsuario').value.trim();
+            const password = document.getElementById('inputPassword').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Usuarios simulados (en producción esto viene del Backend/JWT)
+            const usuarios = {
+                'admin':    { password: 'admin123',  rol: 'comite',   nombre: 'Comité Central' },
+                'tesorero': { password: 'tes123',    rol: 'comite',   nombre: 'Tesorero' },
+                'operario': { password: 'op123',     rol: 'operario', nombre: 'Operario Calí' },
+            };
+
+            const user = usuarios[usuario.toLowerCase()];
+
+            if (!user || user.password !== password) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            // Guardar sesión en localStorage
+            localStorage.setItem('sesionActiva', JSON.stringify({
+                usuario: usuario,
+                nombre: user.nombre,
+                rol: user.rol,
+                fechaLogin: new Date().toISOString()
+            }));
+
+            // Redirigir según rol
+            if (user.rol === 'operario') {
+                window.location.href = 'operador.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function loginHabitante() {
+            const telefono = document.getElementById('inputTelefono').value.trim();
+            if (!telefono) {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('errorMsg').innerText = '❌ Por favor ingresa tu número de teléfono o DPI.';
+                return;
+            }
+
+            localStorage.setItem('sesionActiva', JSON.stringify({
+                usuario: telefono,
+                nombre: 'Habitante',
+                rol: 'habitante',
+                credencial: telefono,
+                fechaLogin: new Date().toISOString()
+            }));
+
+            window.location.href = 'habitante.html';
+        }
+    </script>
+</body>
+</html>

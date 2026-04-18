@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agua San Miguel - Panel del Comité</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💧</div>
+                <h2>San Miguel</h2>
+                <span>Panel Administrativo</span>
+            </div>
+            <nav>
+                <a href="index.html" class="active">🗂️ Dashboard</a>
+                <a href="familias.html">👥 Familias</a>
+                <a href="turnos.html">🗓️ Turnos Fijos</a>
+                <a href="operador.html">⚙️ Módulo Operador</a>
+                <a href="averias.html">⚠️ Averías</a>
+                <a href="habitante.html">👤 Portal Habitante</a>
+                <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <a href="#" onclick="cerrarSesion()" style="color: var(--danger);">🚪 Cerrar Sesión</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Resumen Financiero y Operativo</h1>
+                <div class="user-profile">Tesorero Central <span>👤</span></div>
+            </header>
+
+            <!-- KPIs -->
+            <section class="kpi-grid">
+                <div class="kpi-card danger">
+                    <h3>Familias en Mora</h3>
+                    <div class="kpi-value">14</div>
+                    <p>Alertas emitidas</p>
+                </div>
+                <div class="kpi-card success">
+                    <h3>Recaudación Mensual</h3>
+                    <div class="kpi-value">Q 4,850</div>
+                    <p>Al día de hoy</p>
+                </div>
+                <div class="kpi-card info">
+                    <h3>Averías Activas</h3>
+                    <div class="kpi-value">2</div>
+                    <p>En revisión</p>
+                </div>
+            </section>
+
+            <!-- Table & Tank Layout -->
+            <div class="dashboard-grid">
+                <!-- Left: Table -->
+                <section class="data-section">
+                    <div class="table-container fade-in">
+                        <div class="section-header">
+                            <h2>Listado de Familias y Pagos</h2>
+                            <button class="btn btn-primary" id="btnNuevoAbono" onclick="abrirModalPago('Familia Nueva / Otra')">+ Registrar Pago</button>
+                        </div>
+                        <table class="modern-table" id="tablaFamilias">
+                            <thead>
+                                <tr>
+                                    <th>Familia / Responsable</th>
+                                    <th>Sector / Válvula</th>
+                                    <th>Estado Pago</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Lorenzana, D.</td>
+                                    <td>Sector 1 - Centro</td>
+                                    <td><span class="badge badge-success">Solvente</span></td>
+                                    <td><button class="btn btn-outline" onclick="abrirFicha('Lorenzana, D.')">Ver Turno</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Ardón, Carlos</td>
+                                    <td>Sector 2 - Norte</td>
+                                    <td><span class="badge badge-danger">Moroso - 3 cuotas</span></td>
+                                    <td>
+                                        <button class="btn btn-wa" onclick="enviarWhatsApp('Carlos Ardón')">💬</button>
+                                        <button class="btn btn-corte" onclick="alertaCorte('Ardón, Carlos')">Corte ⚠️</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Familia Cachin (Tienda)</td>
+                                    <td>Sector 1 - Centro</td>
+                                    <td><span class="badge badge-warning">Mora - 1 cuota</span></td>
+                                    <td><button class="btn btn-outline" onclick="abrirModalPago('Familia Cachin')">Cobrar Q50</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Right: Tank Visual -->
+                <aside class="tank-section fade-in">
+                    <div class="table-container">
+                        <h3 style="text-align: center; margin-bottom: 20px;">Nivel de Tanque Colector</h3>
+                        <div class="tank-wrapper-mini">
+                            <div class="tank-visual-mini">
+                                <div class="water-level" id="tank-fill-main" style="height: 55%;"></div>
+                            </div>
+                            <div class="tank-info">
+                                <h2 id="tank-main-percent">55%</h2>
+                                <p>Capacidad Actual</p>
+                            </div>
+                        </div>
+                        
+                        <div class="reading-meta">
+                            <p><strong>Última Lectura:</strong> (Modo Offline)</p>
+                            <p>Ingresado por: Operario Calí</p>
+                            <p>Hora Pozo/Medición: 08:00 AM</p>
+                            <p>Sincronización Nube: 10:15 AM</p>
+                        </div>
+                        <button class="btn btn-outline" style="width: 100%; margin-top: 20px;" onclick="alert('Forzando refresco de datos desde el pozo...')">Forzar Refresco</button>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Cero Abonos -->
+    <div class="modal-overlay" id="modalPago">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Registrar Pago Mensual</h2>
+            <p><strong>Familia:</strong> <span id="modalFamiliaNombre"></span></p>
+            <p class="nota-strict">REGLA ACTIVA: NO SE ACEPTAN ABONOS PARCIALES. La cuota mensual es de <strong>Q 50.00</strong>.</p>
+            
+            <div class="input-group">
+                <label>Monto Entregado (Q):</label>
+                <input type="number" id="montoPagoInput" placeholder="Ej. 50">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="procesarPago()">Validar y Registrar</button>
+            </div>
+            <div id="pagoMsg" class="msg-box"></div>
+        </div>
+    </div>
+
+    <!-- Modal Órden de Corte -->
+    <div class="modal-overlay" id="modalCorte">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2 style="color: var(--danger);">⚠️ Órden de Suspensión (RF-03)</h2>
+            <br>
+            <p>Se ha detectado una mora crítica para la familia: <br><strong id="corteNombreFamilia"></strong></p>
+            <br>
+            <div class="nota-strict">
+                Esta acción genera un mandato formal para que el operario proceda con la desconexión física de la válvula.
+            </div>
+            <p><strong>Mora acumulada:</strong> <span id="corteMesesMora"></span> meses</p>
+            <br>
+            <div class="modal-actions">
+                <button class="btn btn-corte" style="width: 100%" onclick="finalizarCorte()">Confirmar y Emitir Órden</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ficha Técnica -->
+    <div class="modal-overlay" id="modalFicha">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Ficha Técnica del Habitante</h2>
+            <div id="fichaContenido">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notificación Éxito -->
+    <div class="modal-overlay" id="modalNotificacion">
+        <div class="modal" style="text-align: center;">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <div style="font-size: 50px;">✅</div>
+            <h2 id="notiTitulo">Acción Completada</h2>
+            <p id="notiTexto"></p>
+            <br>
+            <button class="btn btn-primary" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

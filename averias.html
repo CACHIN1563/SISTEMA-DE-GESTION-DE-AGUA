@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Averías - Agua San Miguel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">💧</span>
+                <h2>San Miguel</h2>
+            </div>
+            <nav>
+                <a href="index.html" class="nav-item">📊 Dashboard</a>
+                <a href="familias.html" class="nav-item">👥 Familias</a>
+                <a href="turnos.html" class="nav-item">📅 Turnos</a>
+                <a href="operador.html" class="nav-item">🔧 Operador</a>
+                <a href="averias.html" class="nav-item active">⚠️ Averías</a>
+                <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <a href="#" onclick="cerrarSesion()" style="color: var(--danger); text-decoration: none; font-weight: 600;">🚪 Cerrar Sesión</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar reporte...">
+                </div>
+                <div class="user-profile">
+                    <span>Admin Comité</span>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <section class="content-header">
+                <div>
+                    <h1>Reporte de Averías y Fallas</h1>
+                    <p>Gestión de incidencias técnicas en la red de distribución.</p>
+                </div>
+                <button class="btn btn-primary" onclick="document.getElementById('modalNuevaAveria').style.display = 'flex'">+ Reportar Falla</button>
+            </section>
+
+            <section class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <h3>Registros de Fallas Activas</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Sector/Válvula</th>
+                                    <th>Tipo de Falla</th>
+                                    <th>Estado</th>
+                                    <th>Prioridad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>16 Abr, 2026</td>
+                                    <td>Sector 1 - Válvula A2</td>
+                                    <td>Fuga en tubería primaria</td>
+                                    <td><span class="status-badge" style="background: #ffe5e5; color: #ff3b3b;">En reparación</span></td>
+                                    <td>Urgente</td>
+                                    <td><button class="btn btn-outline" style="padding: 5px 10px;">Detalles</button></td>
+                                </tr>
+                                <tr>
+                                    <td>14 Abr, 2026</td>
+                                    <td>Tanque Principal</td>
+                                    <td>Falla sensor de nivel</td>
+                                    <td><span class="status-badge" style="background: #e5f9e5; color: #27ae60;">Resuelto</span></td>
+                                    <td>Media</td>
+                                    <td><button class="btn btn-outline" style="padding: 5px 10px;">Detalles</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Nueva Avería -->
+    <div class="modal-overlay" id="modalNuevaAveria">
+        <div class="modal">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <h2>Reportar Nueva Falla</h2>
+            <div class="input-group">
+                <label>Ubicación / Válvula:</label>
+                <select id="valvulaAveria" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+                    <option value="Sector 1">Sector 1 - Válvula Principal</option>
+                    <option value="Sector 2">Sector 2 - Caserío Norte</option>
+                    <option value="Tanque">Tanque de Almacenamiento</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Tipo de Avería:</label>
+                <input type="text" id="tipoAveria" placeholder="Ej: Ruptura de tubo PVC 2''">
+            </div>
+            <div class="input-group">
+                <label>Descripción:</label>
+                <textarea id="descAveria" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd;"></textarea>
+            </div>
+            <div class="input-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="alertaMasiva" style="width: 20px; height: 20px;">
+                <label for="alertaMasiva">¿Enviar alerta masiva a los vecinos afectados?</label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="guardarAveria()">Registrar Falla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notificación -->
+    <div class="modal-overlay" id="modalNotificacion">
+        <div class="modal" style="text-align: center;">
+            <button class="close-modal" onclick="cerrarModales()">×</button>
+            <div id="notiIcon" style="font-size: 50px;">✅</div>
+            <h2 id="notiTitulo">Éxito</h2>
+            <p id="notiTexto">Falla registrada correctamente.</p>
+            <br>
+            <button class="btn btn-primary" style="width: 100%" onclick="cerrarModales()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
