@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +10,50 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// === CONFIGURACIÓN DE SWAGGER ===
+const swaggerDocument = {
+  openapi: '3.0.0',
+  info: {
+    title: 'API Sistema Agua San Miguel',
+    version: '1.0.0',
+    description: 'Documentación de los endpoints principales del sistema.'
+  },
+  paths: {
+    '/api/auth/login': {
+      post: {
+        summary: 'Autenticación de Usuario',
+        requestBody: {
+          content: { 'application/json': { schema: { type: 'object', properties: { dpi: { type: 'string' }, password: { type: 'string' } } } } }
+        },
+        responses: {
+          '200': { description: 'Login exitoso' },
+          '401': { description: 'No autorizado' }
+        }
+      }
+    },
+    '/api/pagos': {
+      post: {
+        summary: 'Registrar Pago (Cero Abonos)',
+        responses: {
+          '200': { description: 'Pago registrado exitosamente' },
+          '400': { description: 'Error Cero Abonos' }
+        }
+      }
+    },
+    '/api/vecinos': {
+      get: {
+        summary: 'Control de Roles',
+        responses: {
+          '403': { description: 'Forbidden (Acceso denegado)' }
+        }
+      }
+    }
+  }
+};
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // Configuración de la Base de Datos (PostgreSQL)
 // Nota: En producción, usa variables de entorno
