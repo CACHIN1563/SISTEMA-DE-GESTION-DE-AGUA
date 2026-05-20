@@ -81,6 +81,38 @@ app.post('/api/averias', async (req, res) => {
   }
 });
 
+// === RUTAS SIMULADAS PARA PRUEBAS (PROYECTO 3) ===
+
+// CP-01: Login exitoso
+app.post('/api/auth/login', (req, res) => {
+  res.status(200).json({
+    message: "Login exitoso",
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sIjoiSGFiaXRhbnRlIiwiZXhwIjoxNjg5MDUyODAwfQ.Signature",
+    rol: "Habitante"
+  });
+});
+
+// CP-04: Error Cero Abonos
+app.post('/api/pagos', (req, res) => {
+  const { monto } = req.body;
+  if (parseFloat(monto) < 50.00) {
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "Error Cero Abonos: No se aceptan abonos parciales. La cuota estricta es de Q50.00."
+    });
+  }
+  res.status(200).json({ message: "Pago registrado exitosamente" });
+});
+
+// CP-10: Error de Roles (Habitante intentando ver vecinos)
+app.get('/api/vecinos', (req, res) => {
+  // Simulando que el middleware de auth detectó el token de "Habitante"
+  res.status(403).json({
+    error: "Forbidden",
+    message: "Acceso denegado. Se requiere rol de 'Comité' para ver el listado completo de vecinos."
+  });
+});
+
 app.listen(port, () => {
   console.log(`Servidor de Agua San Miguel corriendo en http://localhost:${port}`);
 });

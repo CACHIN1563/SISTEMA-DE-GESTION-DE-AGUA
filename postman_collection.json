@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "b3e94473-12e0-496f-8d26-7f41a8a3a2bd",
+		"name": "Pruebas Sistema Agua San Miguel v1.0.0",
+		"description": "Colección generada para la Sección 2.3 Evidencias de Pruebas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CP-01 Login Exitoso",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dpi\": \"1234567890123\",\n    \"password\": \"mipassword\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CP-04 Rechazo Abono Parcial",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sIjoiQ29taXRlIiwiZXhwIjoxNjg5MDUyODAwfQ.Signature"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id_usuario\": 5,\n    \"monto\": 25.00,\n    \"mes_pago\": \"Abril 2026\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/pagos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"pagos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CP-10 Control de Roles (Forbidden)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sIjoiSGFiaXRhbnRlIiwiZXhwIjoxNjg5MDUyODAwfQ.Signature"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/vecinos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"vecinos"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
