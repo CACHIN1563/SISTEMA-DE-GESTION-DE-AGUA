@@ -6,7 +6,7 @@
     <title>Operador - Agua San Miguel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
 </head>
 <body>
     <div id="offline-banner" class="offline-banner">⚠️ Estás en modo Offline. Los datos se guardarán localmente.</div>
@@ -67,6 +67,31 @@
                             <p style="font-size: 13px; color: #666;"><strong>Simulador:</strong> Desactiva tu Wi-Fi o apaga tu internet en la computadora para ver cómo el sistema intercepta la pérdida de señal y guarda localmente la lectura.</p>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Órdenes de Suspensión Pendientes -->
+            <section class="data-section fade-in" style="margin-top: 40px;">
+                <div class="table-container">
+                    <div class="section-header">
+                        <h2>📋 Órdenes de Suspensión Pendientes (Corte de Servicio)</h2>
+                    </div>
+                    <table class="modern-table" id="tablaCortes">
+                        <thead>
+                            <tr>
+                                <th>Fecha Emisión</th>
+                                <th>Jefe de Hogar</th>
+                                <th>Sector / Válvula</th>
+                                <th>Estado</th>
+                                <th>Acción Física</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCortesBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Cargando suspensiones asignadas...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </main>

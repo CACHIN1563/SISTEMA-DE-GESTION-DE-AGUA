@@ -6,7 +6,7 @@
     <title>Agua San Miguel - Gestión de Familias</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
 </head>
 <body>
     <div class="app-container">
@@ -52,23 +52,9 @@
                             </tr>
                         </thead>
                         <tbody id="listaFamiliasCompleta">
+                            <!-- Se inyecta dinámicamente -->
                             <tr>
-                                <td>Lorenzana, Daniel</td>
-                                <td>2345 67890 0101</td>
-                                <td>5544-3322</td>
-                                <td>Sector 1</td>
-                                <td>
-                                    <button class="btn btn-outline" onclick="abrirFicha('Lorenzana, Daniel')">Ver Ficha</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Ardón, Carlos</td>
-                                <td>1234 56789 0101</td>
-                                <td>4433-2211</td>
-                                <td>Sector 2</td>
-                                <td>
-                                    <button class="btn btn-outline" onclick="abrirFicha('Ardón, Carlos')">Ver Ficha</button>
-                                </td>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Cargando censo de familias...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -97,9 +83,7 @@
             <div class="input-group">
                 <label>Sector / Válvula:</label>
                 <select id="sectorFamilia" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
-                    <option value="Sector 1">Sector 1 - Centro</option>
-                    <option value="Sector 2">Sector 2 - Norte</option>
-                    <option value="Sector 3">Sector 3 - Sur</option>
+                    <!-- Se carga dinámicamente -->
                 </select>
             </div>
             <div class="modal-actions">

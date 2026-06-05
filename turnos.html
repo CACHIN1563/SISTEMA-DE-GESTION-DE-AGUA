@@ -6,7 +6,7 @@
     <title>Agua San Miguel - Planificación de Turnos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
 </head>
 <body>
     <div class="app-container">
@@ -42,56 +42,16 @@
                         <button class="btn btn-primary" onclick="abrirModalNuevoTurno()">+ Nuevo Turno</button>
                     </div>
                     <div style="margin-top: 20px;">
-                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-                            <div style="font-weight: bold;">Lunes</div>
-                            <div style="font-weight: bold;">Martes</div>
-                            <div style="font-weight: bold;">Miércoles</div>
-                            <div style="font-weight: bold;">Jueves</div>
-                            <div style="font-weight: bold;">Viernes</div>
-                            <div style="font-weight: bold;">Sábado</div>
-                            <div style="font-weight: bold;">Domingo</div>
-                            
-                            <!-- Ejemplo de Llenado Visual -->
-                            <div class="kpi-card info" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--primary);">
-                                <b>Sector 1</b><br>08:00 - 13:00
-                            </div>
-                            <div class="kpi-card success" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--success);">
-                                <b>Sector 2</b><br>08:00 - 13:00
-                            </div>
-                            <div class="kpi-card warning" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--warning);">
-                                <b>Sector 3</b><br>08:00 - 13:00
-                            </div>
-                            <div class="kpi-card info" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--primary);">
-                                <b>Sector 1</b><br>08:00 - 13:00
-                            </div>
-                            <div class="kpi-card success" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--success);">
-                                <b>Sector 2</b><br>08:00 - 13:00
-                            </div>
-                            <div class="kpi-card warning" style="padding: 10px; font-size: 12px; border-top: 2px solid var(--warning);">
-                                <b>Sector 3</b><br>14:00 - 18:00
-                            </div>
-                            <div style="padding: 10px; border: 1px dashed #ccc; border-radius: 8px; font-size: 12px;">Limpieza Tanque</div>
+                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;" id="calendarioSemanalGrid">
+                            <!-- Se carga dinámicamente desde la base de datos en app.js -->
                         </div>
                     </div>
                     
                     <div style="margin-top: 40px;">
                         <h3>Sectores Disponibles</h3>
-                        <div class="kpi-grid" style="margin-top: 20px;">
-                            <div class="kpi-card info" style="padding: 20px;">
-                                <h4>Sector 1 - Centro</h4>
-                                <p>50 Familias conectadas</p>
-                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 1 - Centro')">Ver Horarios</button>
-                            </div>
-                            <div class="kpi-card success" style="padding: 20px;">
-                                <h4>Sector 2 - Norte</h4>
-                                <p>38 Familias conectadas</p>
-                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 2 - Norte')">Ver Horarios</button>
-                            </div>
-                            <div class="kpi-card warning" style="padding: 20px;">
-                                <h4>Sector 3 - Sur</h4>
-                                <p>22 Familias conectadas</p>
-                                <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="verHorariosSector('Sector 3 - Sur')">Ver Horarios</button>
-                            </div>
+                        <div class="kpi-grid" id="sectoresDisponiblesContainer" style="margin-top: 20px;">
+                            <!-- Se carga dinámicamente desde la base de datos -->
+                            <p style="color: var(--text-muted);">Cargando sectores y horarios...</p>
                         </div>
                     </div>
                 </div>
@@ -107,9 +67,19 @@
             <div class="input-group">
                 <label>Sector:</label>
                 <select id="sectorTurno" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
-                    <option value="Sector 1">Sector 1 - Centro</option>
-                    <option value="Sector 2">Sector 2 - Norte</option>
-                    <option value="Sector 3">Sector 3 - Sur</option>
+                    <!-- Se inyecta dinámicamente -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Día Programado:</label>
+                <select id="diaTurno" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sábado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
                 </select>
             </div>
             <div class="input-group">

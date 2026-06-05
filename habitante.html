@@ -6,7 +6,7 @@
     <title>Portal del Habitante - Agua San Miguel</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
     <style>
         .habitante-portal {
             max-width: 500px;
@@ -86,8 +86,8 @@
         <div style="margin-top: 30px;">
             <h3>Próximo Turno de Agua</h3>
             <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 10px; color: #1e3a8a;">
-                <p><strong>Lunes, 20 Abril</strong></p>
-                <p style="font-size: 24px; font-weight: 700;">08:00 AM - 01:00 PM</p>
+                <p><strong id="turnoDia">Cargando horario...</strong></p>
+                <p id="turnoHoras" style="font-size: 24px; font-weight: 700;">--:--</p>
             </div>
         </div>
 
@@ -96,24 +96,68 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const sesion = JSON.parse(localStorage.getItem('sesionActiva'));
             if (sesion && sesion.rol === 'habitante') {
-                // Si ya está logueado como habitante, mostrar el dashboard directamente
+                // Mostrar dashboard de habitante
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('habitanteDashboard').style.display = 'block';
-                document.getElementById('nombreHabitante').innerText = "BIENVENIDO: " + sesion.usuario;
-                
-                // Simulación de datos según el número ingresado
-                if(sesion.usuario.includes("55")) {
-                    document.getElementById('labelEstado').innerText = "MOROSO";
-                    document.getElementById('labelEstado').style.color = "#eb4d4b";
-                    document.getElementById('alertaDeuda').style.display = 'flex';
+                document.getElementById('nombreHabitante').innerText = "BIENVENIDO: Cargando...";
+
+                try {
+                    // Hacer la consulta real
+                    const res = await fetch(`/api/habitantes/buscar?credencial=${encodeURIComponent(sesion.usuario)}`);
+                    if (!res.ok) {
+                        alert("Error al cargar la información del habitante.");
+                        localStorage.removeItem('sesionActiva');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const habitante = await res.json();
+                    
+                    // Llenar campos
+                    document.getElementById('nombreHabitante').innerText = "BIENVENIDO: " + habitante.nombre_jefe.toUpperCase();
+                    document.getElementById('labelSector').innerText = habitante.nombre_sector || 'Sector General';
+
+                    const labelEstado = document.getElementById('labelEstado');
+                    const mesesMora = parseInt(habitante.meses_mora) || 0;
+                    
+                    if (mesesMora > 0) {
+                        labelEstado.innerText = habitante.estado_solvencia.toUpperCase() + ` (${mesesMora} meses)`;
+                        labelEstado.style.color = "#eb4d4b";
+                        document.getElementById('alertaDeuda').style.display = 'flex';
+                        document.getElementById('montoDeuda').innerText = `Q${mesesMora * 50}.00`;
+                    } else {
+                        labelEstado.innerText = "SOLVENTE";
+                        labelEstado.style.color = "#27ae60";
+                        document.getElementById('alertaDeuda').style.display = 'none';
+                    }
+
+                    // Turno
+                    const horario = habitante.horario_fijo || 'No programado';
+                    const match = horario.match(/^([^(]+)\(([^)]+)\)/);
+                    if (match) {
+                        document.getElementById('turnoDia').innerText = match[1].trim();
+                        document.getElementById('turnoHoras').innerText = match[2].trim();
+                    } else {
+                        document.getElementById('turnoDia').innerText = 'Distribución';
+                        document.getElementById('turnoHoras').innerText = horario;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('nombreHabitante').innerText = "Error al conectar con la base de datos.";
                 }
+            } else {
+                // Redirigir si no hay sesión
+                window.location.href = 'login.html';
             }
         });
+        
+        function cerrarSesion() {
+            localStorage.removeItem('sesionActiva');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>

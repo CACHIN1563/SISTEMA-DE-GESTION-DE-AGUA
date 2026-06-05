@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "40bfd53d-1424-4682-8293-3a03e87754a0",
+		"name": "API Sistema Agua San Miguel",
+		"description": "Colección completa para realizar pruebas y simular peticiones HTTP en el Sistema de Gestión de Agua San Miguel. Todos los payloads están mapeados con las tablas y campos reales de PostgreSQL.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Listar Familias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/familias",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"familias"
+					]
+				},
+				"description": "Obtiene la lista completa de familias y jefes de hogar en el censo, incluyendo el nombre del sector al que pertenecen."
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Familia",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre_jefe\": \"Gómez, María\",\n  \"dpi\": \"5678 90123 0101\",\n  \"telefono\": \"5566-9900\",\n  \"id_sector\": 1,\n  \"estado_solvencia\": \"Solvente\",\n  \"meses_mora\": 0\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/familias",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"familias"
+					]
+				},
+				"description": "Registra una nueva familia o jefe de hogar en el censo familiar asociado a un sector específico."
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Sectores",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/sectores",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"sectores"
+					]
+				},
+				"description": "Obtiene todos los sectores de distribución de agua registrados en el sistema."
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Pago",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id_familia\": 1,\n  \"monto\": 50.00,\n  \"mes_saldado\": \"Mayo 2026\",\n  \"metodo_pago\": \"Efectivo\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/pagos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"pagos"
+					]
+				},
+				"description": "Registra un pago mensual de Q50.00 para una familia. Disminuye en 1 la cantidad de meses de mora. Si el monto es menor a Q50.00, devuelve error por regla estricta de Cero Abonos."
+			},
+			"response": []
+		},
+		{
+			"name": "Reportar Avería",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id_sector\": 1,\n  \"tipo_averia\": \"Fuga en tubería secundaria\",\n  \"descripcion\": \"Ruptura en el tubo de PVC en callejón lateral del Centro.\",\n  \"alerta_enviada\": true,\n  \"estado\": \"En reparación\",\n  \"prioridad\": \"Media\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/averias",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"averias"
+					]
+				},
+				"description": "Reporta una nueva falla técnica o avería en un sector determinado de la red de distribución."
+			},
+			"response": []
+		},
+		{
+			"name": "Guardar Lectura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id_empleado\": 1,\n  \"nivel_porcentaje\": 85,\n  \"observaciones\": \"Lectura matutina, tanque operando en condiciones óptimas.\",\n  \"sincronizado_nube\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/lecturas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"lecturas"
+					]
+				},
+				"description": "Guarda físicamente la medición porcentual de volumen del tanque de distribución."
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Horario Sector",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"horario_fijo\": \"Lunes y Jueves (08:00 AM - 01:00 PM)\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/sectores/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"sectores",
+						"1"
+					]
+				},
+				"description": "Actualiza el horario fijo de distribución física asignado a un sector determinado en PostgreSQL."
+			},
+			"response": []
+		},
+		{
+			"name": "Simular Facturación Mensual",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/facturacion/generar-mensualidad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"facturacion",
+						"generar-mensualidad"
+					]
+				},
+				"description": "Simula el paso de un mes: carga una nueva cuota mensual de Q50 (+1 mes de mora) a todas las familias de la base de datos de PostgreSQL y las coloca en estado Mora."
+			},
+			"response": []
+		}
+	]
+}

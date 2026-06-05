@@ -6,7 +6,7 @@
     <title>Reporte de Averías - Agua San Miguel</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
 </head>
 <body>
     <div class="app-container">
@@ -30,29 +30,26 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="top-bar">
-                <div class="search-bar">
-                    <input type="text" placeholder="Buscar reporte...">
+            <header class="topbar">
+                <div class="search-bar" style="flex: 1; max-width: 300px;">
+                    <input type="text" placeholder="Buscar reporte..." style="width: 100%; padding: 10px 16px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 14px;">
                 </div>
-                <div class="user-profile">
-                    <span>Admin Comité</span>
-                    <div class="avatar">A</div>
-                </div>
+                <div class="user-profile">Admin Comité <span>👤</span></div>
             </header>
 
-            <section class="content-header">
+            <section class="content-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                 <div>
                     <h1>Reporte de Averías y Fallas</h1>
-                    <p>Gestión de incidencias técnicas en la red de distribución.</p>
+                    <p style="color: var(--text-muted); margin-top: 5px;">Gestión de incidencias técnicas en la red de distribución.</p>
                 </div>
-                <button class="btn btn-primary" onclick="document.getElementById('modalNuevaAveria').style.display = 'flex'">+ Reportar Falla</button>
+                <button class="btn btn-primary" onclick="abrirModalAveria()">+ Reportar Falla</button>
             </section>
 
             <section class="dashboard-grid" style="grid-template-columns: 1fr;">
-                <div class="card">
-                    <h3>Registros de Fallas Activas</h3>
-                    <div class="table-container">
-                        <table>
+                <div class="card" style="background: white; padding: 30px; border-radius: var(--border-rad); box-shadow: var(--card-shadow);">
+                    <h3 style="margin-bottom: 20px;">Registros de Fallas Activas</h3>
+                    <div class="table-container" style="padding: 0; box-shadow: none;">
+                        <table class="modern-table" id="tablaAverias">
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
@@ -63,22 +60,10 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tablaAveriasBody">
+                                <!-- Se carga dinámicamente -->
                                 <tr>
-                                    <td>16 Abr, 2026</td>
-                                    <td>Sector 1 - Válvula A2</td>
-                                    <td>Fuga en tubería primaria</td>
-                                    <td><span class="status-badge" style="background: #ffe5e5; color: #ff3b3b;">En reparación</span></td>
-                                    <td>Urgente</td>
-                                    <td><button class="btn btn-outline" style="padding: 5px 10px;">Detalles</button></td>
-                                </tr>
-                                <tr>
-                                    <td>14 Abr, 2026</td>
-                                    <td>Tanque Principal</td>
-                                    <td>Falla sensor de nivel</td>
-                                    <td><span class="status-badge" style="background: #e5f9e5; color: #27ae60;">Resuelto</span></td>
-                                    <td>Media</td>
-                                    <td><button class="btn btn-outline" style="padding: 5px 10px;">Detalles</button></td>
+                                    <td colspan="6" style="text-align: center; color: var(--text-muted);">Cargando reporte de fallas...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -94,11 +79,17 @@
             <button class="close-modal" onclick="cerrarModales()">×</button>
             <h2>Reportar Nueva Falla</h2>
             <div class="input-group">
-                <label>Ubicación / Válvula:</label>
-                <select id="valvulaAveria" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
-                    <option value="Sector 1">Sector 1 - Válvula Principal</option>
-                    <option value="Sector 2">Sector 2 - Caserío Norte</option>
-                    <option value="Tanque">Tanque de Almacenamiento</option>
+                <label>Sector / Válvula Afectada:</label>
+                <select id="valvulaAveria" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    <!-- Se carga dinámicamente -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Prioridad:</label>
+                <select id="prioridadAveria" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    <option value="Urgente">Urgente</option>
+                    <option value="Media" selected>Media</option>
+                    <option value="Baja">Baja</option>
                 </select>
             </div>
             <div class="input-group">

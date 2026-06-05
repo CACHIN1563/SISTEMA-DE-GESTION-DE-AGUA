@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Sistema Agua San Miguel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -229,13 +229,7 @@
             </div>
             <button class="btn-login" onclick="iniciarSesion()">Ingresar al Sistema →</button>
 
-            <div class="credentials-hint">
-                <p>
-                    <strong>Comité:</strong> admin / admin123<br>
-                    <strong>Operario:</strong> operario / op123<br>
-                    <strong>Tesorero:</strong> tesorero / tes123
-                </p>
-            </div>
+
         </div>
 
         <!-- Panel Habitante -->
@@ -253,6 +247,9 @@
 
     <script>
         // auth.js se encarga de la verificación inicial de sesión
+        const API_BASE = window.location.protocol.startsWith('http') 
+            ? window.location.origin 
+            : 'http://localhost:3000';
 
 
         function cambiarTab(tipo) {
@@ -263,60 +260,86 @@
             document.getElementById('errorMsg').style.display = 'none';
         }
 
-        function iniciarSesion() {
+        async function iniciarSesion() {
             const usuario = document.getElementById('inputUsuario').value.trim();
             const password = document.getElementById('inputPassword').value;
             const errorMsg = document.getElementById('errorMsg');
 
-            // Usuarios simulados (en producción esto viene del Backend/JWT)
-            const usuarios = {
-                'admin':    { password: 'admin123',  rol: 'comite',   nombre: 'Comité Central' },
-                'tesorero': { password: 'tes123',    rol: 'comite',   nombre: 'Tesorero' },
-                'operario': { password: 'op123',     rol: 'operario', nombre: 'Operario Calí' },
-            };
+            try {
+                const res = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, password })
+                });
 
-            const user = usuarios[usuario.toLowerCase()];
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = `❌ ${data.message || data.error || 'Fallo de autenticación'}: ${data.details || 'Usuario o contraseña incorrectos'}`;
+                    return;
+                }
 
-            if (!user || user.password !== password) {
+                const user = await res.json();
+                errorMsg.style.display = 'none';
+
+                // Guardar sesión en localStorage
+                localStorage.setItem('sesionActiva', JSON.stringify({
+                    usuario: user.usuario,
+                    nombre: user.nombre,
+                    rol: user.rol,
+                    fechaLogin: new Date().toISOString()
+                }));
+
+                // Redirigir según rol
+                if (user.rol === 'operario') {
+                    window.location.href = 'operador.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+
+            } catch (err) {
                 errorMsg.style.display = 'block';
-                return;
-            }
-
-            errorMsg.style.display = 'none';
-
-            // Guardar sesión en localStorage
-            localStorage.setItem('sesionActiva', JSON.stringify({
-                usuario: usuario,
-                nombre: user.nombre,
-                rol: user.rol,
-                fechaLogin: new Date().toISOString()
-            }));
-
-            // Redirigir según rol
-            if (user.rol === 'operario') {
-                window.location.href = 'operador.html';
-            } else {
-                window.location.href = 'index.html';
+                errorMsg.innerText = '❌ Error de comunicación con el servidor central.';
             }
         }
 
-        function loginHabitante() {
+        async function loginHabitante() {
             const telefono = document.getElementById('inputTelefono').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            
             if (!telefono) {
-                document.getElementById('errorMsg').style.display = 'block';
-                document.getElementById('errorMsg').innerText = '❌ Por favor ingresa tu número de teléfono o DPI.';
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = '❌ Por favor ingresa tu número de teléfono o DPI.';
                 return;
             }
 
-            localStorage.setItem('sesionActiva', JSON.stringify({
-                usuario: telefono,
-                nombre: 'Habitante',
-                rol: 'habitante',
-                credencial: telefono,
-                fechaLogin: new Date().toISOString()
-            }));
+            try {
+                const res = await fetch(`${API_BASE}/api/habitantes/buscar?credencial=${encodeURIComponent(telefono)}`);
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = `❌ ${data.message || 'El teléfono o DPI ingresado no está registrado.'}`;
+                    return;
+                }
 
-            window.location.href = 'habitante.html';
+                const habitante = await res.json();
+
+                errorMsg.style.display = 'none';
+
+                // Guardar la sesión real de habitante en localStorage
+                localStorage.setItem('sesionActiva', JSON.stringify({
+                    usuario: habitante.telefono,
+                    nombre: habitante.nombre_jefe,
+                    rol: 'habitante',
+                    credencial: habitante.telefono,
+                    fechaLogin: new Date().toISOString()
+                }));
+
+                window.location.href = 'habitante.html';
+            } catch (err) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = '❌ Error de comunicación con el servidor central.';
+            }
         }
     </script>
 </body>

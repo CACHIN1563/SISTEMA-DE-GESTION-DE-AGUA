@@ -1,0 +1,71 @@
+services:
+  app:
+    build: .
+    container_name: sistema_agua_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_USER=${DB_USER:-postgres}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME:-sistema_agua}
+      - DB_PASSWORD=${DB_PASSWORD:-150623}
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      # Cambia "midominio.com" por tu dominio real
+      - "traefik.http.routers.app.rule=Host(`aguasanmiguel.duckdns.org`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls.certresolver=myresolver"
+      - "traefik.http.services.app.loadbalancer.server.port=3000"
+
+  db:
+    image: postgres:15-alpine
+    container_name: sistema_agua_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-150623}
+      POSTGRES_DB: ${DB_NAME:-sistema_agua}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Si quieres que el script se corra automáticamente al crear la DB por primera vez:
+      - ./BD_Script_Simulado.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik_proxy
+    restart: unless-stopped
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # Cambia este correo por el tuyo para notificaciones de Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.email=ccachinm@miumg.edu.gt"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "traefik-certs:/letsencrypt"
+
+volumes:
+  pgdata:
+  traefik-certs:

@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <script src="auth.js"></script>
+    <script src="auth.js?v=4"></script>
 </head>
 <body>
     <div class="app-container">
@@ -52,7 +52,7 @@
                 </div>
                 <div class="kpi-card info">
                     <h3>Averías Activas</h3>
-                    <div class="kpi-value">2</div>
+                    <div class="kpi-value" id="kpi-averias-activas">...</div>
                     <p>En revisión</p>
                 </div>
             </section>
@@ -64,7 +64,8 @@
                     <div class="table-container fade-in">
                         <div class="section-header">
                             <h2>Listado de Familias y Pagos</h2>
-                            <button class="btn btn-primary" id="btnNuevoAbono" onclick="abrirModalPago('Familia Nueva / Otra')">+ Registrar Pago</button>
+                            <button class="btn btn-primary" id="btnNuevoAbono" onclick="abrirModalPago(null)">+ Registrar Pago</button>
+                            <button class="btn btn-outline" id="btnFacturacionMasiva" onclick="ejecutarFacturacionMensual()" style="margin-left: 10px; border-color: var(--danger); color: var(--danger);">⚡ Cargar Mensualidad</button>
                         </div>
                         <table class="modern-table" id="tablaFamilias">
                             <thead>
@@ -75,27 +76,10 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tablaFamiliasBody">
+                                <!-- Se carga dinámicamente mediante JS -->
                                 <tr>
-                                    <td>Lorenzana, D.</td>
-                                    <td>Sector 1 - Centro</td>
-                                    <td><span class="badge badge-success">Solvente</span></td>
-                                    <td><button class="btn btn-outline" onclick="abrirFicha('Lorenzana, D.')">Ver Turno</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Ardón, Carlos</td>
-                                    <td>Sector 2 - Norte</td>
-                                    <td><span class="badge badge-danger">Moroso - 3 cuotas</span></td>
-                                    <td>
-                                        <button class="btn btn-wa" onclick="enviarWhatsApp('Carlos Ardón')">💬</button>
-                                        <button class="btn btn-corte" onclick="alertaCorte('Ardón, Carlos')">Corte ⚠️</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Familia Cachin (Tienda)</td>
-                                    <td>Sector 1 - Centro</td>
-                                    <td><span class="badge badge-warning">Mora - 1 cuota</span></td>
-                                    <td><button class="btn btn-outline" onclick="abrirModalPago('Familia Cachin')">Cobrar Q50</button></td>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando información de familias...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -108,10 +92,10 @@
                         <h3 style="text-align: center; margin-bottom: 20px;">Nivel de Tanque Colector</h3>
                         <div class="tank-wrapper-mini">
                             <div class="tank-visual-mini">
-                                <div class="water-level" id="tank-fill-main" style="height: 55%;"></div>
+                                <div class="water-level" id="tank-fill-main" style="height: 0%;"></div>
                             </div>
                             <div class="tank-info">
-                                <h2 id="tank-main-percent">55%</h2>
+                                <h2 id="tank-main-percent">0%</h2>
                                 <p>Capacidad Actual</p>
                             </div>
                         </div>
@@ -134,7 +118,18 @@
         <div class="modal">
             <button class="close-modal" onclick="cerrarModales()">×</button>
             <h2>Registrar Pago Mensual</h2>
-            <p><strong>Familia:</strong> <span id="modalFamiliaNombre"></span></p>
+            
+            <div class="input-group" id="pagoSelectContainer" style="margin-top: 15px;">
+                <label>Seleccionar Familia / Jefe de Hogar:</label>
+                <select id="pagoFamiliaSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 16px;">
+                    <!-- Carga dinámica -->
+                </select>
+            </div>
+            
+            <p id="pagoFamiliaTextContainer" style="display: none; margin-top: 15px; font-size: 16px;">
+                <strong>Familia:</strong> <span id="modalFamiliaNombre"></span>
+            </p>
+
             <p class="nota-strict">REGLA ACTIVA: NO SE ACEPTAN ABONOS PARCIALES. La cuota mensual es de <strong>Q 50.00</strong>.</p>
             
             <div class="input-group">

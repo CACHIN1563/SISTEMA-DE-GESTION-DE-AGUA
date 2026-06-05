@@ -1,7 +1,10 @@
-const CACHE_NAME = 'aguasanmiguel-v1';
+const CACHE_NAME = 'aguasanmiguel-v2';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/familias.html',
+  '/averias.html',
+  '/turnos.html',
   '/operador.html',
   '/style.css',
   '/app.js'
@@ -16,21 +19,33 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
+  // Fuerza a que el SW activo actual tome el control inmediatamente
+  self.skipWaiting();
 });
 
-// Interceptación de solicitudes de Red
+// Interceptación de solicitudes de Red (Network First)
 self.addEventListener('fetch', event => {
+  // Evitar interceptar peticiones de la API o métodos que no sean GET
+  if (event.request.method !== 'GET' || event.request.url.includes('/api/')) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Retorna el archivo desde caché si existe (incluso sin internet)
-        if (response) {
-          return response;
+        // Si la red responde bien, actualizamos la caché con la copia fresca
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
         }
-        // De lo contrario va por la red normal
-        return fetch(event.request);
-      }
-    )
+        return response;
+      })
+      .catch(() => {
+        // Si no hay internet (offline), servimos desde la caché local
+        return caches.match(event.request);
+      })
   );
 });
 
@@ -42,10 +57,11 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Eliminando caché vieja:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // Reclamar clientes inmediatamente
   );
 });
